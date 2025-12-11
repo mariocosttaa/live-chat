@@ -2,6 +2,40 @@
 
 A real-time chat application with WebSocket support, built with Laravel backend and Vue.js frontend.
 
+## Tech Stack
+
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socket.io&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+![Pest](https://img.shields.io/badge/Pest-000000?style=for-the-badge&logo=pest&logoColor=white)
+![Composer](https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=white)
+![NPM](https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white)
+
+**Backend:**
+- **Laravel 12.0** - PHP web framework
+- **PHP 8.2** - Server-side programming language
+- **Laravel Reverb** - WebSocket server for real-time communication
+- **SQLite** - Lightweight, file-based database
+- **Pest PHP** - Modern PHP testing framework
+- **Composer** - PHP dependency manager
+
+**Frontend:**
+- **Vue.js 3** - Progressive JavaScript framework
+- **Laravel Echo** - WebSocket client library
+- **Axios** - HTTP client for API requests
+- **Vite** - Fast frontend build tool
+- **NPM** - Node package manager
+
+**DevOps:**
+- **Docker** - Containerization platform
+- **Docker Compose** - Multi-container orchestration
+- **Helper Scripts** - `dc` command and Makefile for easy management
+
 ## Features
 
 - ✅ Real-time messaging via WebSocket
