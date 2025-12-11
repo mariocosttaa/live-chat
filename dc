@@ -1,0 +1,151 @@
+#!/bin/bash
+
+# Live Chat App - Docker Command Wrapper
+# Usage: dc [command] [options]
+
+# Unset any existing dc function to avoid conflicts
+unset -f dc 2>/dev/null || true
+
+set -e
+
+# Colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Show help
+show_help() {
+    echo -e "${BLUE}Live Chat App - Docker Commands${NC}"
+    echo ""
+    echo "Usage: dc [command]"
+    echo ""
+    echo "Available commands:"
+    echo "  ${GREEN}build${NC}              - Build all Docker images"
+    echo "  ${GREEN}up${NC}                 - Start all services"
+    echo "  ${GREEN}down${NC}               - Stop all services"
+    echo "  ${GREEN}restart${NC}            - Restart all services"
+    echo "  ${GREEN}logs${NC}               - Show logs from all services"
+    echo "  ${GREEN}logs-backend${NC}       - Show backend logs"
+    echo "  ${GREEN}logs-frontend${NC}      - Show frontend logs"
+    echo "  ${GREEN}logs-reverb${NC}       - Show reverb logs"
+    echo ""
+    echo "Shell access:"
+    echo "  ${GREEN}shell-backend${NC}      - Open shell in backend container"
+    echo "  ${GREEN}shell-frontend${NC}     - Open shell in frontend container"
+    echo "  ${GREEN}shell-reverb${NC}       - Open shell in reverb container"
+    echo ""
+    echo "Development commands:"
+    echo "  ${GREEN}install-backend${NC}    - Run composer install in backend"
+    echo "  ${GREEN}install-frontend${NC}   - Run npm install in frontend"
+    echo "  ${GREEN}migrate${NC}            - Run database migrations"
+    echo "  ${GREEN}test${NC}               - Run backend tests"
+    echo "  ${GREEN}artisan${NC} [cmd]      - Run artisan command (e.g., 'dc artisan cache:clear')"
+    echo ""
+    echo "Other:"
+    echo "  ${GREEN}clean${NC}              - Clean up Docker resources"
+    echo "  ${GREEN}ps${NC}                 - Show running containers"
+    echo "  ${GREEN}help${NC}                - Show this help message"
+    echo ""
+}
+
+# Main command handler
+case "$1" in
+    build)
+        echo -e "${YELLOW}Building Docker images...${NC}"
+        docker-compose build
+        ;;
+    
+    up)
+        echo -e "${YELLOW}Starting all services...${NC}"
+        docker-compose up -d
+        ;;
+    
+    down)
+        echo -e "${YELLOW}Stopping all services...${NC}"
+        docker-compose down
+        ;;
+    
+    restart)
+        echo -e "${YELLOW}Restarting all services...${NC}"
+        docker-compose restart
+        ;;
+    
+    logs)
+        docker-compose logs -f
+        ;;
+    
+    logs-backend)
+        docker-compose logs -f backend
+        ;;
+    
+    logs-frontend)
+        docker-compose logs -f frontend
+        ;;
+    
+    logs-reverb)
+        docker-compose logs -f reverb
+        ;;
+    
+    shell-backend)
+        docker-compose exec backend bash
+        ;;
+    
+    shell-frontend)
+        docker-compose exec frontend sh
+        ;;
+    
+    shell-reverb)
+        docker-compose exec reverb bash
+        ;;
+    
+    install-backend)
+        echo -e "${YELLOW}Installing backend dependencies...${NC}"
+        docker-compose exec backend composer install
+        ;;
+    
+    install-frontend)
+        echo -e "${YELLOW}Installing frontend dependencies...${NC}"
+        docker-compose exec frontend npm install
+        ;;
+    
+    migrate)
+        echo -e "${YELLOW}Running database migrations...${NC}"
+        docker-compose exec backend php artisan migrate
+        ;;
+    
+    test)
+        echo -e "${YELLOW}Running backend tests...${NC}"
+        docker-compose exec backend php artisan test
+        ;;
+    
+    artisan)
+        if [ -z "$2" ]; then
+            echo -e "${YELLOW}Usage: dc artisan [command]${NC}"
+            echo "Example: dc artisan cache:clear"
+            exit 1
+        fi
+        shift
+        docker-compose exec backend php artisan "$@"
+        ;;
+    
+    clean)
+        echo -e "${YELLOW}Cleaning up Docker resources...${NC}"
+        docker-compose down -v
+        docker system prune -f
+        ;;
+    
+    ps)
+        docker-compose ps
+        ;;
+    
+    help|--help|-h|"")
+        show_help
+        ;;
+    
+    *)
+        # If command not found, pass it directly to docker-compose
+        docker-compose "$@"
+        ;;
+esac
+
