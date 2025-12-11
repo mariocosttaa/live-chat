@@ -1,0 +1,15 @@
+node_modules
+vendor
+.git
+.gitignore
+.env
+.env.backup
+.env.production
+*.log
+.DS_Store
+dist
+build
+coverage
+.idea
+.vscode
+

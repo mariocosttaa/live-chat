@@ -1,0 +1,67 @@
+services:
+  backend:
+    build:
+      context: ./docker/backend
+      dockerfile: Dockerfile
+    container_name: live-chat-backend
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backand:/var/www/html
+      - ./backand/database/database.sqlite:/var/www/html/database/database.sqlite
+    ports:
+      - "8000:8000"
+    networks:
+      - live-chat-network
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+    command: >
+      sh -c "composer install --no-interaction --prefer-dist --optimize-autoloader &&
+             php artisan key:generate --force || true &&
+             touch database/database.sqlite &&
+             php artisan migrate --force &&
+             php artisan serve --host=0.0.0.0 --port=8000"
+
+  reverb:
+    build:
+      context: ./docker/reverb
+      dockerfile: Dockerfile
+    container_name: live-chat-reverb
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backand:/var/www/html
+    ports:
+      - "8081:8081"
+    networks:
+      - live-chat-network
+    depends_on:
+      - backend
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+    command: php artisan reverb:start --host=0.0.0.0 --port=8081
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    container_name: live-chat-frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - live-chat-network
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host 0.0.0.0
+
+networks:
+  live-chat-network:
+    driver: bridge
+
+volumes:
+  frontend_node_modules:
